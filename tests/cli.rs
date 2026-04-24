@@ -123,7 +123,10 @@ fn add_does_not_duplicate_gitignore_entry() {
     run_gwt(&repo, &["add", "second"]);
 
     let gitignore = std::fs::read_to_string(repo.path().join(".gitignore")).unwrap();
-    let count = gitignore.lines().filter(|l| l.trim() == ".worktrees").count();
+    let count = gitignore
+        .lines()
+        .filter(|l| l.trim() == ".worktrees")
+        .count();
     assert_eq!(count, 1, ".worktrees should appear only once in .gitignore");
 }
 
@@ -161,7 +164,10 @@ fn ls_shows_main_worktree() {
 
     assert!(output.status.success());
     let out = stdout(&output);
-    assert!(out.contains("master") || out.contains("main"), "should show main branch");
+    assert!(
+        out.contains("master") || out.contains("main"),
+        "should show main branch"
+    );
 }
 
 #[test]
@@ -251,7 +257,10 @@ fn rm_then_ls_no_longer_shows_removed() {
 
     let output = run_gwt(&repo, &["ls"]);
     let out = stdout(&output);
-    assert!(!out.contains("ephemeral"), "removed worktree should not appear in ls");
+    assert!(
+        !out.contains("ephemeral"),
+        "removed worktree should not appear in ls"
+    );
 }
 
 // ── shell-init ──
