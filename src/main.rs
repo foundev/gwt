@@ -5,35 +5,72 @@ use std::process::{self, Command, Stdio};
 use std::time::SystemTime;
 
 const ADJECTIVES: &[&str] = &[
-    "bold", "brave", "bright", "calm", "clever", "cool", "cosmic", "cozy",
-    "crisp", "dapper", "eager", "fancy", "fierce", "fluffy", "funky",
-    "gentle", "giddy", "grand", "groovy", "happy", "humble", "jazzy",
-    "jolly", "keen", "lively", "lucky", "mellow", "mighty", "neat", "nimble",
-    "peppy", "plucky", "proud", "quick", "quiet", "rapid", "rustic",
-    "sharp", "shiny", "slick", "snappy", "snazzy", "spicy", "steady",
-    "sunny", "swift", "witty", "zany", "zesty", "zippy",
+    "bold", "brave", "bright", "calm", "clever", "cool", "cosmic", "cozy", "crisp", "dapper",
+    "eager", "fancy", "fierce", "fluffy", "funky", "gentle", "giddy", "grand", "groovy", "happy",
+    "humble", "jazzy", "jolly", "keen", "lively", "lucky", "mellow", "mighty", "neat", "nimble",
+    "peppy", "plucky", "proud", "quick", "quiet", "rapid", "rustic", "sharp", "shiny", "slick",
+    "snappy", "snazzy", "spicy", "steady", "sunny", "swift", "witty", "zany", "zesty", "zippy",
 ];
 
 const VERBS: &[&str] = &[
-    "blazing", "bouncing", "buzzing", "chasing", "climbing", "crafting",
-    "dancing", "dashing", "dazzling", "diving", "dreaming", "drifting",
-    "flipping", "floating", "flying", "frolicking", "gliding", "grinning",
-    "hiking", "hopping", "humming", "jumping", "juggling", "leaping",
-    "marching", "prancing", "racing", "roaming", "rolling", "running",
-    "sailing", "singing", "skating", "skipping", "soaring", "spinning",
-    "sprinting", "strolling", "surfing", "swooping", "tapping", "trekking",
-    "tumbling", "twirling", "vaulting", "wandering", "weaving", "whirling",
-    "whistling", "zooming",
+    "blazing",
+    "bouncing",
+    "buzzing",
+    "chasing",
+    "climbing",
+    "crafting",
+    "dancing",
+    "dashing",
+    "dazzling",
+    "diving",
+    "dreaming",
+    "drifting",
+    "flipping",
+    "floating",
+    "flying",
+    "frolicking",
+    "gliding",
+    "grinning",
+    "hiking",
+    "hopping",
+    "humming",
+    "jumping",
+    "juggling",
+    "leaping",
+    "marching",
+    "prancing",
+    "racing",
+    "roaming",
+    "rolling",
+    "running",
+    "sailing",
+    "singing",
+    "skating",
+    "skipping",
+    "soaring",
+    "spinning",
+    "sprinting",
+    "strolling",
+    "surfing",
+    "swooping",
+    "tapping",
+    "trekking",
+    "tumbling",
+    "twirling",
+    "vaulting",
+    "wandering",
+    "weaving",
+    "whirling",
+    "whistling",
+    "zooming",
 ];
 
 const NOUNS: &[&str] = &[
-    "babbage", "banjo", "blossom", "breeze", "cobalt", "comet", "compass",
-    "curie", "dijkstra", "donkey", "euler", "falcon", "ferris", "feynman",
-    "gauss", "grove", "hopper", "lantern", "lamport", "maple", "moose",
-    "newton", "otter", "panda", "phoenix", "pluto", "quasar", "raven",
-    "rocket", "sequoia", "shuttle", "spark", "sphinx", "summit", "tesla",
-    "thistle", "tiger", "trinket", "turing", "walrus", "widget", "willow",
-    "zenith",
+    "babbage", "banjo", "blossom", "breeze", "cobalt", "comet", "compass", "curie", "dijkstra",
+    "donkey", "euler", "falcon", "ferris", "feynman", "gauss", "grove", "hopper", "lantern",
+    "lamport", "maple", "moose", "newton", "otter", "panda", "phoenix", "pluto", "quasar", "raven",
+    "rocket", "sequoia", "shuttle", "spark", "sphinx", "summit", "tesla", "thistle", "tiger",
+    "trinket", "turing", "walrus", "widget", "willow", "zenith",
 ];
 
 fn random_name() -> String {
@@ -158,13 +195,13 @@ fn list_worktrees() -> Vec<Worktree> {
             current_path = Some(PathBuf::from(path));
         } else if let Some(branch) = line.strip_prefix("branch refs/heads/") {
             current_branch = Some(branch.to_string());
-        } else if line.is_empty() {
-            if let Some(p) = current_path.take() {
-                worktrees.push(Worktree {
-                    path: p,
-                    branch: current_branch.take(),
-                });
-            }
+        } else if line.is_empty()
+            && let Some(p) = current_path.take()
+        {
+            worktrees.push(Worktree {
+                path: p,
+                branch: current_branch.take(),
+            });
         }
     }
     if let Some(p) = current_path.take() {
@@ -192,13 +229,13 @@ fn find_worktree(name: &str) -> Option<Worktree> {
 
     // Then by directory name
     for wt in &worktrees {
-        if let Some(dir_name) = wt.path.file_name().and_then(|n| n.to_str()) {
-            if dir_name == name {
-                return Some(Worktree {
-                    path: wt.path.clone(),
-                    branch: wt.branch.clone(),
-                });
-            }
+        if let Some(dir_name) = wt.path.file_name().and_then(|n| n.to_str())
+            && dir_name == name
+        {
+            return Some(Worktree {
+                path: wt.path.clone(),
+                branch: wt.branch.clone(),
+            });
         }
     }
 
@@ -326,10 +363,10 @@ fn cmd_rm(name: &str) {
 }
 
 fn shorten_path(path: &std::path::Path) -> String {
-    if let Some(home) = env::var_os("HOME") {
-        if let Ok(rest) = path.strip_prefix(&home) {
-            return format!("~/{}", rest.display());
-        }
+    if let Some(home) = env::var_os("HOME")
+        && let Ok(rest) = path.strip_prefix(&home)
+    {
+        return format!("~/{}", rest.display());
     }
     path.display().to_string()
 }
